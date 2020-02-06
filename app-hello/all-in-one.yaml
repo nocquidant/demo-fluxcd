@@ -6,7 +6,6 @@ metadata:
     component: frontend
     domain: demo
   name: front
-  namespace: hello
 spec:
   ports:
   - port: 8484
@@ -26,7 +25,6 @@ metadata:
     component: backend
     domain: demo
   name: back
-  namespace: hello
 spec:
   ports:
   - port: 8485
@@ -44,7 +42,6 @@ metadata:
   labels:
     component: frontend
   name: front
-  namespace: hello
 spec:
   replicas: 1
   selector:
@@ -89,7 +86,6 @@ metadata:
   labels:
     component: backend
   name: back
-  namespace: hello
 spec:
   replicas: 1
   selector:
