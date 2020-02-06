@@ -67,7 +67,7 @@ spec:
         - name: HELLO_PORT
           value: "8484"
         - name: HELLO_URL
-          value: hello-back-svc:8485/hello
+          value: back:8485/hello
         image: nocquidant/go-hello
         livenessProbe:
           httpGet:
