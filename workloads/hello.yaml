@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    team: demo
+  name: hello-back
+  namespace: hello
+spec:
+  ports:
+  - port: 8485
+    protocol: TCP
+    targetPort: 8485
+  selector:
+    id: hello-back
+    team: demo
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    team: demo
+  name: hello-front
+  namespace: hello
+spec:
+  ports:
+  - port: 8484
+    protocol: TCP
+    targetPort: 8484
+  selector:
+    id: hello-front
+    team: demo
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    team: demo
+  name: hello-back
+  namespace: hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      id: hello-back
+      team: demo
+  template:
+    metadata:
+      labels:
+        id: hello-back
+        team: demo
+    spec:
+      containers:
+      - env:
+        - name: HELLO_NAME
+          value: hello-back
+        - name: HELLO_PORT
+          value: "8485"
+        image: nocquidant/go-hello
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /health
+            port: 8485
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+        name: go-hello
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    team: demo
+  name: hello-front
+  namespace: hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      id: hello-front
+      team: demo
+  template:
+    metadata:
+      labels:
+        id: hello-front
+        team: demo
+    spec:
+      containers:
+      - env:
+        - name: HELLO_NAME
+          value: hello-front
+        - name: HELLO_PORT
+          value: "8484"
+        - name: HELLO_URL
+          value: hello-back:8485/hello
+        image: nocquidant/go-hello
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /health
+            port: 8484
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+        name: go-hello
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
