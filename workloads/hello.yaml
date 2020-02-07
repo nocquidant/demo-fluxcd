@@ -30,7 +30,7 @@ spec:
   selector:
     id: hello-front
     team: demo
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
